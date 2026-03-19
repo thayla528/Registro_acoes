@@ -1,17 +1,21 @@
 import sqlite3
 
+# Conecta ao banco
 conn = sqlite3.connect("banco.db")
-conn.row_factory = sqlite3.Row  # Para acessar colunas por nome
+conn.row_factory = sqlite3.Row
 cursor = conn.cursor()
 
-# Listar todas as empresas
+# Pega todas as empresas
 cursor.execute("SELECT * FROM empresas")
 empresas = cursor.fetchall()
 
-for empresa in empresas:
-    print(dict(empresa))  # Mostra cada linha como dicionário
+# Exibe todas
+if empresas:
+    for e in empresas:
+        print(dict(e))  # Mostra como dicionário para facilitar leitura
+else:
+    print("Nenhuma empresa cadastrada.")
 
 conn.close()
 
 # para ver python ver_banco.py
-

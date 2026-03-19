@@ -38,6 +38,31 @@
     color: #555;
     margin-top: 0.2rem;
 }
+
+/* ESTILIZAÇÃO DO ESCOLHER ARQUIVO PARA COMBINAR COM EDITAR FOTO */
+.input-file-modern {
+    font-size: 10px;
+    width: 100%;
+    color: #888;
+    text-align: center;
+}
+.input-file-modern::-webkit-file-upload-button {
+    background: white;
+    border: 1px solid var(--pink-baby);
+    padding: 6px 12px;
+    border-radius: 0.75rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: var(--pink-text);
+    cursor: pointer;
+    margin-bottom: 8px;
+    width: 100%;
+    letter-spacing: 0.1em;
+    transition: all 0.3s;
+}
+.input-file-modern::-webkit-file-upload-button:hover {
+    background-color: #fff1f1;
+}
 </style>
 
 <div class="max-w-7xl mx-auto px-4 pb-20">
@@ -52,19 +77,35 @@
             </p>
         </div>
 
-        <a href="{{ url_for('logout') }}"
-           class="bg-gradient-pink-red text-white font-black py-2 px-4 rounded-xl shadow-md uppercase text-[10px] tracking-widest hover:brightness-110 transition-all">
-           Logout
-        </a>
+
     </div>
 
     <!-- CARDS DE INFORMAÇÕES -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-        <!-- Foto de perfil -->
+        <!-- Card de Foto -->
         <div class="card flex flex-col items-center justify-center">
-            <img src="https://via.placeholder.com/80" alt="Foto de perfil" class="rounded-full mb-2">
+
+            {% if os.path.exists('static/perfil/' + usuario + '.png') %}
+                <img id="perfilFoto"
+                     src="{{ url_for('static', filename='perfil/' + usuario + '.png') }}"
+                     alt="Foto de perfil" class="rounded-full mb-2 w-20 h-20 object-cover border-2 border-pink-baby">
+            {% else %}
+                <div class="w-20 h-20 bg-pink-50 rounded-full flex items-center justify-center border-2 border-pink-baby mb-2">
+                    <span class="material-symbols-outlined text-4xl text-[--precision-red]" style="font-variation-settings: 'FILL' 1;">person</span>
+                </div>
+            {% endif %}
+
             <h3>{{ usuario }}</h3>
-            <p>{{ email }}</p>
+
+            <form method="POST" enctype="multipart/form-data" action="{{ url_for('upload_foto') }}" class="mt-4 flex flex-col gap-1 w-full">
+                <!-- Escolher Arquivo estilizado -->
+                <input type="file" name="foto" id="foto" accept="image/*" required class="input-file-modern">
+
+                <!-- Botão Alterar Foto -->
+                <button type="submit" class="bg-gradient-pink-red text-white font-black py-2 px-3 rounded-xl text-[10px] uppercase tracking-widest hover:brightness-110 transition-all w-full">
+                    Alterar Foto
+                </button>
+            </form>
         </div>
 
         <!-- Empresas cadastradas -->
@@ -83,34 +124,17 @@
             <p>Lucro total</p>
         </div>
 
-        <!-- Placeholder para outro card, ex: ROE ou ROIC -->
-        <div class="card">
-            <h3>-</h3>
-            <p>Em breve</p>
-        </div>
+        <div class="card"><h3>-</h3><p>Em breve</p></div>
     </div>
 
-    <!-- LISTA DE EMPRESAS -->
+    <!-- TABELA -->
     <div class="overflow-x-auto">
         <table class="w-full text-left border-separate border-spacing-y-3">
-            <thead>
-                <tr class="text-[--precision-red] text-[10px] uppercase tracking-widest font-black">
-                    <th class="px-4 py-2">Ticker</th>
-                    <th class="px-4 py-2">Empresa</th>
-                    <th class="px-4 py-2">Setor</th>
-                    <th class="px-4 py-2">Qtd. Ações</th>
-                    <th class="px-4 py-2">Preço</th>
-                    <th class="px-4 py-2">Lucro</th>
-                    <th class="px-4 py-2 text-right">Ações</th>
-                </tr>
-            </thead>
             <tbody>
                 {% for empresa in empresas %}
-                <tr class="table-row-precision text-sm">
+                <tr class="table-row-precision text-sm bg-white shadow-sm rounded-2xl">
                     <td class="px-4 py-4 rounded-l-2xl font-black text-[--precision-red]">{{ empresa.ticker }}</td>
                     <td class="px-4 py-4 font-bold uppercase">{{ empresa.empresa }}</td>
-                    <td class="px-4 py-4">{{ empresa.setor }}</td>
-                    <td class="px-4 py-4">{{ empresa.num_acoes }}</td>
                     <td class="px-4 py-4">R$ {{ "%.2f"|format(empresa.preco_acao) }}</td>
                     <td class="px-4 py-4 text-[--precision-red] font-black">R$ {{ "%.2f"|format(empresa.lucro_liquido) }}</td>
                     <td class="px-4 py-4 rounded-r-2xl text-right flex justify-end gap-2">
@@ -121,10 +145,6 @@
                             <span class="material-symbols-outlined">delete</span>
                         </a>
                     </td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="7" class="text-center py-4 text-gray-500">Nenhuma empresa cadastrada.</td>
                 </tr>
                 {% endfor %}
             </tbody>
