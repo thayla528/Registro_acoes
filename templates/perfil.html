@@ -1,1 +1,134 @@
 {% extends 'base.html' %}
+
+{% block conteudo %}
+<style>
+:root {
+    --precision-red: #c00014;
+    --pink-baby: #fecbcb;
+    --pink-text: #f9a8b1;
+}
+
+.text-gradient-pink-red {
+    background: linear-gradient(to right, var(--pink-text), var(--precision-red));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+}
+
+.bg-gradient-pink-red {
+    background: linear-gradient(135deg, var(--pink-text), var(--precision-red));
+}
+
+.card {
+    background-color: #fffafa;
+    border: 2px solid var(--pink-baby);
+    border-radius: 1.5rem;
+    padding: 1rem;
+    text-align: center;
+}
+
+.card h3 {
+    font-weight: 900;
+    color: var(--precision-red);
+    margin-top: 0.5rem;
+}
+
+.card p {
+    font-size: 0.8rem;
+    color: #555;
+    margin-top: 0.2rem;
+}
+</style>
+
+<div class="max-w-7xl mx-auto px-4 pb-20">
+    <!-- CABEÇALHO -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10 mt-6">
+        <div>
+            <h1 class="text-3xl font-black uppercase tracking-tighter">
+                <span class="text-gradient-pink-red">Perfil do Usuário</span>
+            </h1>
+            <p class="text-[9px] font-black mt-1 tracking-[0.4em] text-gradient-pink-red uppercase">
+                PRECISION INVEST • TERMINAL
+            </p>
+        </div>
+
+        <a href="{{ url_for('logout') }}"
+           class="bg-gradient-pink-red text-white font-black py-2 px-4 rounded-xl shadow-md uppercase text-[10px] tracking-widest hover:brightness-110 transition-all">
+           Logout
+        </a>
+    </div>
+
+    <!-- CARDS DE INFORMAÇÕES -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+        <!-- Foto de perfil -->
+        <div class="card flex flex-col items-center justify-center">
+            <img src="https://via.placeholder.com/80" alt="Foto de perfil" class="rounded-full mb-2">
+            <h3>{{ usuario }}</h3>
+            <p>{{ email }}</p>
+        </div>
+
+        <!-- Empresas cadastradas -->
+        <div class="card">
+            <h3>{{ empresas|length }}</h3>
+            <p>Empresas cadastradas</p>
+        </div>
+
+        <!-- Lucro total -->
+        <div class="card">
+            {% set lucro_total = 0 %}
+            {% for empresa in empresas %}
+                {% set lucro_total = lucro_total + empresa.lucro_liquido %}
+            {% endfor %}
+            <h3>R$ {{ "%.2f"|format(lucro_total) }}</h3>
+            <p>Lucro total</p>
+        </div>
+
+        <!-- Placeholder para outro card, ex: ROE ou ROIC -->
+        <div class="card">
+            <h3>-</h3>
+            <p>Em breve</p>
+        </div>
+    </div>
+
+    <!-- LISTA DE EMPRESAS -->
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-separate border-spacing-y-3">
+            <thead>
+                <tr class="text-[--precision-red] text-[10px] uppercase tracking-widest font-black">
+                    <th class="px-4 py-2">Ticker</th>
+                    <th class="px-4 py-2">Empresa</th>
+                    <th class="px-4 py-2">Setor</th>
+                    <th class="px-4 py-2">Qtd. Ações</th>
+                    <th class="px-4 py-2">Preço</th>
+                    <th class="px-4 py-2">Lucro</th>
+                    <th class="px-4 py-2 text-right">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for empresa in empresas %}
+                <tr class="table-row-precision text-sm">
+                    <td class="px-4 py-4 rounded-l-2xl font-black text-[--precision-red]">{{ empresa.ticker }}</td>
+                    <td class="px-4 py-4 font-bold uppercase">{{ empresa.empresa }}</td>
+                    <td class="px-4 py-4">{{ empresa.setor }}</td>
+                    <td class="px-4 py-4">{{ empresa.num_acoes }}</td>
+                    <td class="px-4 py-4">R$ {{ "%.2f"|format(empresa.preco_acao) }}</td>
+                    <td class="px-4 py-4 text-[--precision-red] font-black">R$ {{ "%.2f"|format(empresa.lucro_liquido) }}</td>
+                    <td class="px-4 py-4 rounded-r-2xl text-right flex justify-end gap-2">
+                        <a href="{{ url_for('editar_empresa', id=empresa.id) }}">
+                            <span class="material-symbols-outlined text-lg">edit</span>
+                        </a>
+                        <a href="{{ url_for('excluir_empresa', id=empresa.id) }}" class="text-[--precision-red] text-lg">
+                            <span class="material-symbols-outlined">delete</span>
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" class="text-center py-4 text-gray-500">Nenhuma empresa cadastrada.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -102,6 +102,10 @@ tr:nth-child(even) {
     text-shadow: 0 0 5px #00d4ff;
 }
 
+.bg-red {
+    background-color: rgba(255, 0, 0, 0.2);
+}
+
 .table-neon {
     color: white !important;
     border-collapse: separate;

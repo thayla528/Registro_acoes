@@ -23,7 +23,7 @@
 
 <!-- MAIN CONTENT -->
 <main class="p-6">
-    {% block content %}
+    {% block conteudo %}
     {% endblock %}
 </main>
 
@@ -36,7 +36,8 @@
         <span class="font-inter text-[11px] font-bold uppercase tracking-[0.1em] mt-1">Perfil</span>
     </a>
 
-    <a class="flex flex-col items-center justify-center text-[#c00014] dark:text-[#ffb4ab] bg-[#fecbcb]/30 rounded-xl px-3 py-1 active:scale-90 transition-all duration-200" href="{{ url_for('cadastrar_empresa') }}"
+    <!-- Cadastro de ações -->
+    <a class="flex flex-col items-center justify-center text-[#c00014] dark:text-[#ffb4ab] bg-[#fecbcb]/30 rounded-xl px-3 py-1 active:scale-90 transition-all duration-200" href="{{ url_for('cadastro_de_acao') }}">
         <span class="font-inter text-[11px] font-bold uppercase tracking-[0.1em] mt-1">Cadastro de ações</span>
     </a>
 
