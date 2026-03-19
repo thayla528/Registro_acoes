@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block conteudo %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<div class="container mt-5">
+    <h1 class="neon-text mb-4">Gerenciamento de Empresas</h1>
+
+    <!-- Botão Nova Empresa -->
+    <button type="button" class="btn btn-info text-white fw-bold btn-round mb-2" data-bs-toggle="modal" data-bs-target="#modalEmpresa" style="box-shadow: 0 0 15px #00d4ff;">
+        Nova Empresa
+    </button>
+
+    <!-- Modal Cadastro Empresa -->
+    <div class="modal fade" id="modalEmpresa" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content" style="background-color: #1a1d24; border: 2px solid #00d4ff; box-shadow: 0 0 30px #00d4ff; border-radius: 20px;">
+          <div class="modal-header border-0">
+            <h1 class="modal-title fs-5 neon-text">Cadastrar Empresa</h1>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form action="{{ url_for('cadastrar_empresa') }}" method="post">
+                <div class="mb-3">
+                    <label class="text-white small">Nome da Empresa:</label>
+                    <input name="empresa" placeholder="Nome da empresa" class="form-control input-neon" required>
+                </div>
+                <div class="mb-3">
+                    <label class="text-white small">Número de Ações:</label>
+                    <input type="number" name="num_acoes" class="form-control input-neon" required>
+                </div>
+                <div class="mb-3">
+                    <label class="text-white small">Preço por Ação:</label>
+                    <input type="number" step="0.01" name="preco_acao" class="form-control input-neon" required>
+                </div>
+                <div class="mb-3">
+                    <label class="text-white small">Lucro Líquido:</label>
+                    <input type="number" step="0.01" name="lucro_liquido" class="form-control input-neon" required>
+                </div>
+                <div class="mb-3">
+                    <label class="text-white small">Patrimônio Líquido:</label>
+                    <input type="number" step="0.01" name="patrimonio" class="form-control input-neon" required>
+                </div>
+                <div class="mb-3">
+                    <label class="text-white small">Ativos Totais:</label>
+                    <input type="number" step="0.01" name="ativos" class="form-control input-neon" required>
+                </div>
+                <div class="mb-3">
+                    <label class="text-white small">Dívida Total:</label>
+                    <input type="number" step="0.01" name="divida" class="form-control input-neon" required>
+                </div>
+                <div class="mb-3">
+                    <label class="text-white small">Tipo de Ação:</label>
+                    <select name="tipo_acao" class="form-control input-neon" required>
+                        <option value="Ordinária">Ordinária</option>
+                        <option value="Preferencial">Preferencial</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-info w-100 mt-3 text-white fw-bold shadow btn-round" style="box-shadow: 0 0 10px #00d4ff;">Salvar no Banco</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabela Empresas -->
+    <div class="table-responsive mt-2">
+        <table class="table table-neon">
+            <thead>
+                <tr class="text-info" style="text-shadow: 0 0 5px #00d4ff;">
+                    <th>Empresa</th>
+                    <th>Tipo</th>
+                    <th>Lucro</th>
+                    <th>Lucro/Ação</th>
+                    <th>ROE</th>
+                    <th>ROA</th>
+                    <th>ROIC</th>
+                    <th>Valor Total</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for empresa in empresas %}
+                {% set valor_total = empresa.num_acoes * empresa.preco_acao %}
+                {% set lucro_acao = empresa.lucro_liquido / empresa.num_acoes %}
+                {% set roe = empresa.lucro_liquido / empresa.patrimonio * 100 %}
+                {% set roa = empresa.lucro_liquido / empresa.ativos * 100 %}
+                {% set roic = empresa.lucro_liquido / (empresa.divida + empresa.patrimonio) * 100 %}
+                <tr {% if valor_total > 19998 %} class="bg-red-600/30" {% endif %}>
+                    <td>{{ empresa.empresa }}</td>
+                    <td>{{ empresa.tipo_acao }}</td>
+                    <td>R$ {{ empresa.lucro_liquido }}</td>
+                    <td>R$ {{ "%.2f"|format(lucro_acao) }}</td>
+                    <td>{{ "%.2f"|format(roe) }}%</td>
+                    <td>{{ "%.2f"|format(roa) }}%</td>
+                    <td>{{ "%.2f"|format(roic) }}%</td>
+                    <td>R$ {{ "%.2f"|format(valor_total) }}</td>
+                    <td>
+                        <a href="{{ url_for('editar_empresa', id=empresa.id) }}" class="btn btn-sm btn-outline-info me-1 btn-round">Editar</a>
+                        <a href="{{ url_for('excluir_empresa', id=empresa.id) }}" class="btn btn-sm btn-outline-danger btn-round"
+                           onclick="return confirm('Deseja excluir {{ empresa.empresa }}?')">Excluir</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
