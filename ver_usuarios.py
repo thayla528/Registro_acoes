@@ -1,16 +1,21 @@
-import sqlite3
+import sqlite3  # Importa o módulo sqlite3 para trabalhar com bancos SQLite
 
+# Conecta ao banco de dados "banco.db"
 conn = sqlite3.connect("banco.db")
-conn.row_factory = sqlite3.Row  # Para acessar colunas por nome
+# Permite acessar as colunas pelo nome, não apenas pelo índice
+conn.row_factory = sqlite3.Row
+# Cria um cursor para executar comandos SQL
 cursor = conn.cursor()
 
-# Listar todos os usuários
+# Executa um comando SQL para selecionar todos os usuários
 cursor.execute("SELECT * FROM usuarios")
+# Recupera todas as linhas retornadas pelo SQL
 usuarios = cursor.fetchall()
 
+# Itera por cada usuário retornado
 for usuario in usuarios:
-    print(dict(usuario))  # Mostra cada linha como dicionário
+    # Converte cada linha para dicionário e imprime, facilitando a leitura
+    print(dict(usuario))
 
+# Fecha a conexão com o banco de dados
 conn.close()
-
-# para ver python ver_usuarios.py

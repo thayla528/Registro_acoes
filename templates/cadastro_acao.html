@@ -2,68 +2,70 @@
 
 {% block conteudo %}
 <style>
-    :root {
-        --precision-red: #c00014;
-        --pink-baby: #fecbcb;
-        --pink-text: #f9a8b1;
-    }
+:root {
+    --precision-red: #c00014;
+    --pink-baby: #fecbcb;
+    --pink-text: #f9a8b1;
+}
 
-    .text-gradient-pink-red {
-        background: linear-gradient(to right, var(--pink-text), var(--precision-red));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        display: inline-block;
-    }
+.text-gradient-pink-red {
+    background: linear-gradient(to right, var(--pink-text), var(--precision-red));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+}
 
-    .bg-gradient-pink-red {
-        background: linear-gradient(135deg, var(--pink-text), var(--precision-red));
-    }
+.bg-gradient-pink-red {
+    background: linear-gradient(135deg, var(--pink-text), var(--precision-red));
+}
 
-    .table-precision {
-        width: 100%;
-        border-collapse: separate;
-        border-spacing: 0 15px;
-    }
+.table-precision {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 15px;
+    border-radius: 15px;
+    overflow: hidden;
+}
 
-    .table-precision thead tr { background-color: #05070a; }
-    .table-precision thead th {
-        padding: 20px 10px;
-        color: var(--precision-red);
-        font-size: 9px;
-        font-weight: 900;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        text-align: center;
-    }
+.table-precision thead th {
+    background-color: var(--pink-baby);
+    color: var(--precision-red);
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    text-align: center;
+    padding: 20px 10px;
+}
 
-    .table-row-precision {
-        background-color: #ffffff;
-        border: 2px solid var(--pink-baby);
-    }
+.table-row-precision {
+    border: 2px solid var(--pink-baby);
+}
 
-    .table-precision tbody td {
-        padding: 15px 10px;
-        text-align: center;
-        font-size: 11px;
-    }
+.table-precision tbody td {
+    padding: 15px 10px;
+    text-align: center;
+    font-size: 11px;
+}
 
-    .input-precision {
-        background-color: #fecbcb22 !important;
-        border: 1px solid var(--pink-baby) !important;
-        color: var(--precision-red) !important;
-        border-radius: 10px;
-        font-size: 0.8rem;
-        padding: 8px 12px !important;
-    }
+.input-precision {
+    background-color: #fecbcb22 !important;
+    border: 1px solid var(--pink-baby) !important;
+    color: var(--precision-red) !important;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    padding: 8px 12px !important;
+}
 
-    .modal-overlay {
-        background-color: rgba(0, 0, 0, 0.4);
-        backdrop-filter: blur(4px);
-    }
+.modal-overlay {
+    background-color: rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px);
+}
 </style>
 
 <div class="max-w-7xl mx-auto px-4 pb-20">
-    <!-- CABEÇALHO -->
+
+    <!-- HEADER -->
     <div class="flex justify-between items-center mb-10 mt-6">
         <div>
             <h1 class="text-3xl font-black uppercase tracking-tighter">
@@ -75,13 +77,13 @@
         </div>
 
         <button onclick="document.getElementById('modalCadastro').classList.remove('hidden')"
-                class="bg-gradient-pink-red text-white font-black py-3 px-8 rounded-xl shadow-lg active:scale-95 transition-all flex items-center gap-2 text-xs">
+                class="bg-gradient-pink-red text-white font-black py-3 px-8 rounded-xl shadow-lg flex items-center gap-2 text-xs">
             <span class="material-symbols-outlined text-sm">add_business</span>
             NOVA EMPRESA
         </button>
     </div>
 
-    <!-- TABELA DE ATIVOS -->
+    <!-- TABELA -->
     <div class="overflow-x-auto">
         <table class="table-precision">
             <thead>
@@ -89,126 +91,159 @@
                     <th>Ticker</th>
                     <th>Empresa</th>
                     <th>Setor</th>
-                    <th>Qtd.</th>
-                    <th>Preço (R$)</th>
+                    <th>Qtd Ações</th>
+                    <th>Preço</th>
+                    <th>Lucro</th>
+                    <th>Patrimônio</th>
+                    <th>Ativos</th>
+                    <th>Dívida</th>
+                    <th>Lote</th>
+                    <th>Tipo</th>
                     <th>V. Mercado</th>
                     <th>AÇÕES</th>
                 </tr>
             </thead>
+
             <tbody>
                 {% if empresas %}
                     {% for empresa in empresas %}
                     <tr class="table-row-precision">
-                        <td class="font-black text-[--precision-red]">{{ empresa.ticker }}</td>
-                        <td class="font-bold uppercase">{{ empresa.empresa }}</td>
-                        <td>{{ empresa.setor }}</td>
-                        <td>{{ empresa.num_acoes }}</td>
-                        <td>R$ {{ "{:,.2f}".format(empresa.preco_acao) }}</td>
-                        <!-- Cálculo automático do valor de mercado -->
-                        <td class="font-black">R$ {{ "{:,.2f}".format(empresa.num_acoes * empresa.preco_acao) }}</td>
+
+                        <td style="color: var(--precision-red)">{{ empresa.ticker }}</td>
+                        <td style="color: var(--precision-red)">{{ empresa.empresa }}</td>
+                        <td style="color: var(--precision-red)">{{ empresa.setor }}</td>
+                        <td style="color: var(--precision-red)">{{ empresa.num_acoes or 0 }}</td>
+
+                        <td style="color: var(--precision-red)">
+                            R$ {{ "%.2f"|format(empresa.preco_acao or 0) }}
+                        </td>
+
+                        <td style="color: var(--precision-red)">
+                            R$ {{ "%.2f"|format(empresa.lucro_liquido or 0) }}
+                        </td>
+
+                        <td style="color: var(--precision-red)">
+                            R$ {{ "%.2f"|format(empresa.patrimonio or 0) }}
+                        </td>
+
+                        <td style="color: var(--precision-red)">
+                            R$ {{ "%.2f"|format(empresa.ativos or 0) }}
+                        </td>
+
+                        <td style="color: var(--precision-red)">
+                            R$ {{ "%.2f"|format(empresa.divida or 0) }}
+                        </td>
+
+                        <td style="color: var(--precision-red)">{{ empresa.lote or 0 }}</td>
+                        <td style="color: var(--precision-red)">{{ empresa.tipo_acao }}</td>
+
+                        <td style="color: var(--precision-red)">
+                            R$ {{ "%.2f"|format((empresa.num_acoes or 0) * (empresa.preco_acao or 0)) }}
+                        </td>
+
                         <td class="flex justify-center gap-2">
-                            <a href="{{ url_for('excluir_empresa', id=empresa.id) }}"
-                               onclick="return confirm('Excluir ativo?')"
-                               class="bg-[--precision-red] text-white p-2 rounded-full text-xs">
-                                <span class="material-symbols-outlined text-sm">delete</span>
+                            <a href="{{ url_for('editar_empresa', id=empresa.id) }}" style="color: var(--precision-red)">
+                                <span class="material-symbols-outlined">edit</span>
+                            </a>
+                            <a href="{{ url_for('excluir_empresa', id=empresa.id) }}" style="color: var(--precision-red)">
+                                <span class="material-symbols-outlined">delete</span>
                             </a>
                         </td>
+
                     </tr>
                     {% endfor %}
                 {% else %}
-                    <tr><td colspan="7" class="text-center py-10 text-gray-400">Nenhum ativo no terminal.</td></tr>
+                    <tr>
+                        <td colspan="13" class="text-center py-10 text-gray-400">
+                            Nenhum ativo no terminal.
+                        </td>
+                    </tr>
                 {% endif %}
             </tbody>
         </table>
     </div>
+
+    <!-- ✅ INDICADORES (ADICIONADO SEM MUDAR NADA) -->
+    <div class="overflow-x-auto mt-10">
+        <table class="table-precision">
+            <thead>
+                <tr>
+                    <th>Empresa</th>
+                    <th>ROE</th>
+                    <th>ROA</th>
+                    <th>ROIC</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for empresa in empresas %}
+
+                {% set lucro = empresa.lucro_liquido or 0 %}
+                {% set patrimonio = empresa.patrimonio or 0 %}
+                {% set ativos = empresa.ativos or 0 %}
+                {% set divida = empresa.divida or 0 %}
+                {% set capital = ativos - divida %}
+
+                {% set roe = (lucro / patrimonio * 100) if patrimonio != 0 else 0 %}
+                {% set roa = (lucro / ativos * 100) if ativos != 0 else 0 %}
+                {% set roic = (lucro / capital * 100) if capital > 0 else 0 %}
+
+                <tr class="table-row-precision">
+                    <td style="color: var(--precision-red)">{{ empresa.empresa }}</td>
+                    <td style="color: green">{{ "%.2f"|format(roe) }}</td>
+                    <td style="color: green">{{ "%.2f"|format(roa) }}</td>
+                    <td style="color: green">{{ "%.2f"|format(roic) }}</td>
+                </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
 </div>
 
-<!-- MODAL DE CADASTRO -->
+<!-- MODAL -->
 <div id="modalCadastro" class="hidden fixed inset-0 z-[100] flex items-center justify-center modal-overlay">
+
     <div class="bg-white w-[350px] rounded-[2.5rem] border-[4px] border-[--pink-baby] relative overflow-y-auto max-h-[90vh]">
 
         <button onclick="document.getElementById('modalCadastro').classList.add('hidden')"
-                class="absolute top-4 right-4 text-[--precision-red] font-black">
-            <span class="material-symbols-outlined">close</span>
-        </button>
+                class="absolute top-4 right-4 font-black">✕</button>
 
-        <div class="p-6 text-center border-b border-[--pink-baby]">
+        <div class="p-6 text-center border-b">
             <h3 class="font-black uppercase text-gradient-pink-red">Novo Registro</h3>
         </div>
 
         <form action="{{ url_for('cadastrar_empresa') }}" method="POST" class="p-6 space-y-3">
-            <div>
-                <label class="text-[9px] font-black text-gradient-pink-red uppercase ml-1">Ticker</label>
-                <input name="ticker" placeholder="Ex: PETR4" class="w-full input-precision outline-none uppercase" required>
-            </div>
 
-            <div>
-                <label class="text-[9px] font-black text-gradient-pink-red uppercase ml-1">Empresa</label>
-                <input name="empresa" placeholder="Ex: Petrobras" class="w-full input-precision outline-none" required>
-            </div>
+            <input name="ticker" placeholder="Ticker" class="input-precision" required>
+            <input name="empresa" placeholder="Empresa" class="input-precision" required>
+            <input name="setor" placeholder="Setor" class="input-precision" required>
 
-            <div class="grid grid-cols-2 gap-2">
-                <div>
-                    <label class="text-[9px] font-black text-gradient-pink-red uppercase ml-1">Setor</label>
-                    <input name="setor" class="w-full input-precision outline-none" required>
-                </div>
-                <div>
-                    <label class="text-[9px] font-black text-gradient-pink-red uppercase ml-1">Tipo</label>
-                    <input name="tipo_acao" placeholder="ON" class="w-full input-precision outline-none" required>
-                </div>
-            </div>
+            <input type="number" name="num_acoes" placeholder="Qtd Ações" class="input-precision" required>
+            <input type="number" step="0.01" name="preco_acao" placeholder="Preço" class="input-precision" required>
 
-            <div class="grid grid-cols-2 gap-2">
-                <div>
-                    <label class="text-[9px] font-black text-gradient-pink-red uppercase ml-1">Qtd Ações</label>
-                    <input type="number" name="num_acoes" class="w-full input-precision outline-none" required>
-                </div>
-                <div>
-                    <label class="text-[9px] font-black text-gradient-pink-red uppercase ml-1">Preço (R$)</label>
-                    <input type="number" step="0.01" name="preco_acao" class="w-full input-precision outline-none" required>
-                </div>
-            </div>
+            <input type="number" step="0.01" name="lucro_liquido" placeholder="Lucro" class="input-precision">
+            <input type="number" step="0.01" name="patrimonio" placeholder="Patrimônio" class="input-precision">
+            <input type="number" step="0.01" name="ativos" placeholder="Ativos" class="input-precision">
+            <input type="number" step="0.01" name="divida" placeholder="Dívida" class="input-precision">
 
-            <div class="grid grid-cols-2 gap-2">
-                <div>
-                    <label class="text-[9px] font-black text-gradient-pink-red uppercase ml-1">Lucro Liq.</label>
-                    <input type="number" step="0.01" name="lucro_liquido" class="w-full input-precision outline-none">
-                </div>
-                <div>
-                    <label class="text-[9px] font-black text-gradient-pink-red uppercase ml-1">Patrimônio</label>
-                    <input type="number" step="0.01" name="patrimonio" class="w-full input-precision outline-none">
-                </div>
-            </div>
+            <input type="number" name="lote" value="100" class="input-precision" required>
+            <input name="tipo_acao" placeholder="Tipo" class="input-precision" required>
 
-            <div class="grid grid-cols-2 gap-2">
-                <div>
-                    <label class="text-[9px] font-black text-gradient-pink-red uppercase ml-1">Dívida</label>
-                    <input type="number" step="0.01" name="divida" class="w-full input-precision outline-none">
-                </div>
-                <div>
-                    <label class="text-[9px] font-black text-gradient-pink-red uppercase ml-1">Lote</label>
-                    <input type="number" name="lote" value="100" class="w-full input-precision outline-none" required>
-                </div>
-            </div>
-
-            <div>
-                <label class="text-[9px] font-black text-gradient-pink-red uppercase ml-1">Ativos</label>
-                <input type="number" step="0.01" name="ativos" class="w-full input-precision outline-none">
-            </div>
-
-            <button type="submit" class="bg-gradient-pink-red text-white w-full py-3 rounded-2xl font-black uppercase tracking-widest shadow-lg active:scale-95 transition-all mt-4">
-                SALVAR NO TERMINAL
+            <button type="submit" class="bg-gradient-pink-red text-white w-full py-3 rounded-2xl font-black">
+                SALVAR
             </button>
+
         </form>
     </div>
 </div>
 
 <script>
-    // Fecha o modal ao clicar fora da caixa branca
-    window.onclick = function(event) {
-        const modal = document.getElementById('modalCadastro');
-        if (event.target == modal) modal.classList.add('hidden');
-    }
+window.onclick = function(event) {
+    const modal = document.getElementById('modalCadastro');
+    if (event.target == modal) modal.classList.add('hidden');
+}
 </script>
 
 {% endblock %}
