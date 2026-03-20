@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+
+{% block conteudo %}
+<style>
+:root {
+    --precision-red: #c00014;
+    --pink-baby: #fecbcb;
+    --pink-text: #f9a8b1;
+}
+
+.text-gradient-pink-red {
+    background: linear-gradient(to right, var(--pink-text), var(--precision-red));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+}
+
+.bg-gradient-pink-red {
+    background: linear-gradient(135deg, var(--pink-text), var(--precision-red));
+}
+
+.card {
+    background-color: #fffafa;
+    border: 2px solid var(--pink-baby);
+    border-radius: 1.5rem;
+    padding: 1rem;
+}
+
+/* TABELA */
+.table-precision {
+    width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 15px;
+        border-radius: 15px;
+        overflow: hidden;
+}
+
+.table-precision thead th {
+    background-color: var(--pink-baby);
+        color: var(--precision-red);
+        font-size: 9px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        text-align: center;
+        padding: 20px 10px;
+}
+
+.table-row-precision {
+    border: 2px solid var(--pink-baby);
+}
+
+.table-precision tbody td {
+    padding: 15px 10px;
+        text-align: center;
+        font-size: 11px;
+}
+
+/* INPUT */
+.input-precision {
+     background-color: #fecbcb22 !important;
+        border: 1px solid var(--pink-baby) !important;
+        color: var(--precision-red) !important;
+        border-radius: 10px;
+        font-size: 0.8rem;
+        padding: 8px 12px !important;
+}
+
+/* MODAL */
+.modal-overlay {
+    background-color: rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px);
+}
+</style>
+
+<div class="max-w-6xl mx-auto mt-10">
+
+    <!-- HEADER -->
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-2xl font-black text-gradient-pink-red">
+            INVESTIMENTOS
+        </h1>
+
+        <button onclick="document.getElementById('modalCadastro').classList.remove('hidden')"
+                class="bg-gradient-pink-red text-white px-6 py-2 rounded-xl font-black text-xs">
+            NOVO INVESTIMENTO
+        </button>
+    </div>
+
+    <!-- TABELA -->
+    <table class="table-precision">
+        <thead>
+            <tr>
+                <th>Tipo</th>
+                <th>Valor</th>
+                <th>Taxa</th>
+                <th>Tempo</th>
+                <th>Lucro</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for inv in investimentos %}
+            <tr class="table-row-precision">
+                <td style="color: var(--precision-red)">{{ inv.tipo }}</td>
+                <td style="color: var(--precision-red)">R$ {{ "%.2f"|format(inv.valor_investido) }}</td>
+                <td style="color: var(--precision-red)">{{ inv.taxa }}%</td>
+                <td style="color: var(--precision-red)">{{ inv.tempo }} meses</td>
+                <td style="color: green">R$ {{ "%.2f"|format(inv.lucro) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+<!-- MODAL -->
+<div id="modalCadastro" class="hidden fixed inset-0 flex items-center justify-center modal-overlay">
+
+    <div class="bg-white w-[350px] rounded-3xl border-4 border-[--pink-baby] relative">
+
+        <!-- FECHAR -->
+        <button onclick="document.getElementById('modalCadastro').classList.add('hidden')"
+                class="absolute top-3 right-3 text-[--precision-red]">
+            ✕
+        </button>
+
+        <!-- TÍTULO -->
+        <div class="p-5 text-center border-b border-[--pink-baby]">
+            <h3 class="font-black text-gradient-pink-red">NOVO INVESTIMENTO</h3>
+        </div>
+
+        <!-- FORM -->
+        <form method="POST" class="p-5 space-y-3">
+
+            <select name="tipo" class="w-full input-precision">
+                <option value="CDI">CDI</option>
+                <option value="LCI">LCI</option>
+                <option value="LCA">LCA</option>
+                <option value="SELIC">SELIC</option>
+            </select>
+
+            <input type="number" name="valor_investido" placeholder="Valor investido"
+                   class="w-full input-precision" required>
+
+            <input type="number" step="0.01" name="taxa" placeholder="Taxa (%)"
+                   class="w-full input-precision" required>
+
+            <input type="number" name="tempo" placeholder="Tempo (meses)"
+                   class="w-full input-precision" required>
+
+
+
+            <button class="bg-gradient-pink-red text-white w-full py-3 rounded-xl font-black">
+                SALVAR
+            </button>
+
+        </form>
+    </div>
+</div>
+
+<script>
+window.onclick = function(event) {
+    const modal = document.getElementById('modalCadastro');
+    if (event.target === modal) {
+        modal.classList.add('hidden');
+    }
+}
+</script>
+
+{% endblock %}

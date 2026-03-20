@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block conteudo %}
+<style>
+    :root {
+        --precision-red: #c00014;
+        --pink-baby: #fecbcb;
+        --pink-text: #f9a8b1;
+    }
+
+    .text-gradient-pink-red {
+        background: linear-gradient(to right, var(--pink-text), var(--precision-red));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+    }
+
+    .input-precision {
+        background-color: #fecbcb22 !important;
+        border: 1px solid var(--pink-baby) !important;
+        color: var(--precision-red) !important;
+        border-radius: 10px;
+        font-size: 0.8rem;
+        padding: 8px 12px !important;
+    }
+
+    .neon-quartz-glow {
+        box-shadow: 0 0 20px rgba(192, 0, 20, 0.1), 0 0 40px rgba(254, 203, 203, 0.2);
+    }
+
+</style>
+
+<div class="max-w-md mx-auto mt-10">
+    <div class="bg-white rounded-2xl p-6 border-4 border-[--pink-baby]">
+        <h2 class="text-center font-black text-gradient-pink-red text-xl mb-4">Editar Empresa</h2>
+
+        <form action="{{ url_for('editar_empresa', id=empresa.id) }}" method="POST" class="space-y-3">
+
+            <!-- Ticker -->
+            <div>
+                <label class="text-[9px] font-black text-gradient-pink-red uppercase ml-1">Ticker</label>
+                <input name="ticker" value="{{ empresa.ticker }}" class="w-full input-precision outline-none uppercase" required>
+            </div>
+
+            <!-- Empresa -->
+            <div>
+                <label class="text-[9px] font-black text-gradient-pink-red uppercase ml-1">Empresa</label>
+                <input name="empresa" value="{{ empresa.empresa }}" class="w-full input-precision outline-none" required>
+            </div>
+
+            <!-- Setor -->
+            <div>
+                <label class="text-[9px] font-black text-gradient-pink-red uppercase ml-1">Setor</label>
+                <input name="setor" value="{{ empresa.setor }}" class="w-full input-precision outline-none" required>
+            </div>
+
+            <!-- Quantidade de Ações -->
+            <div>
+                <label class="text-[9px] font-black text-gradient-pink-red uppercase ml-1">Qtd Ações</label>
+                <input type="number" name="num_acoes" value="{{ empresa.num_acoes }}" class="w-full input-precision outline-none" required>
+            </div>
+
+            <!-- Preço da Ação -->
+            <div>
+                <label class="text-[9px] font-black text-gradient-pink-red uppercase ml-1">Preço (R$)</label>
+                <input type="number" step="0.01" name="preco_acao" value="{{ empresa.preco_acao }}" class="w-full input-precision outline-none" required>
+            </div>
+
+            <!-- Lucro Líquido -->
+            <div>
+                <label class="text-[9px] font-black text-gradient-pink-red uppercase ml-1">Lucro Liq.</label>
+                <input type="number" step="0.01" name="lucro_liquido" value="{{ empresa.lucro_liquido }}" class="w-full input-precision outline-none">
+            </div>
+
+            <!-- Patrimônio -->
+            <div>
+                <label class="text-[9px] font-black text-gradient-pink-red uppercase ml-1">Patrimônio</label>
+                <input type="number" step="0.01" name="patrimonio" value="{{ empresa.patrimonio }}" class="w-full input-precision outline-none">
+            </div>
+
+            <!-- Ativos -->
+            <div>
+                <label class="text-[9px] font-black text-gradient-pink-red uppercase ml-1">Ativos</label>
+                <input type="number" step="0.01" name="ativos" value="{{ empresa.ativos }}" class="w-full input-precision outline-none">
+            </div>
+
+            <!-- Dívida -->
+            <div>
+                <label class="text-[9px] font-black text-gradient-pink-red uppercase ml-1">Dívida</label>
+                <input type="number" step="0.01" name="divida" value="{{ empresa.divida }}" class="w-full input-precision outline-none">
+            </div>
+
+            <!-- Lote -->
+            <div>
+                <label class="text-[9px] font-black text-gradient-pink-red uppercase ml-1">Lote</label>
+                <input type="number" name="lote" value="{{ empresa.lote }}" class="w-full input-precision outline-none" required>
+            </div>
+
+            <!-- Tipo de Ação -->
+            <div>
+                <label class="text-[9px] font-black text-gradient-pink-red uppercase ml-1">Tipo</label>
+                <input name="tipo_acao" value="{{ empresa.tipo_acao }}" class="w-full input-precision outline-none" required>
+            </div>
+
+            <!-- Botão -->
+            <button type="submit"
+                    class="w-full h-14 bg-gradient-to-br from-[#f9a8b1] to-[#c00014] text-white font-black uppercase tracking-widest text-sm rounded-lg active:scale-[0.98] transition-all flex items-center justify-center gap-3 neon-quartz-glow">
+                SALVAR ALTERAÇÕES
+                <span class="material-symbols-outlined text-lg">arrow_forward</span>
+            </button>
+
+        </form>
+    </div>
+</div>
+{% endblock %}
