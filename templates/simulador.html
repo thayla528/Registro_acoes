@@ -8,17 +8,20 @@
     --pink-text: #f9a8b1;
 }
 
+/* Texto com gradiente */
 .text-gradient-pink-red {
     background: linear-gradient(to right, var(--pink-text), var(--precision-red));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        display: inline-block;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
 }
 
+/* Fundo gradiente */
 .bg-gradient-pink-red {
     background: linear-gradient(135deg, var(--pink-text), var(--precision-red));
 }
 
+/* Card */
 .card {
     background-color: #fffafa;
     border: 2px solid var(--pink-baby);
@@ -26,24 +29,24 @@
     padding: 1rem;
 }
 
-/* TABELA */
+/* Tabela */
 .table-precision {
     width: 100%;
-        border-collapse: separate;
-        border-spacing: 0 15px;
-        border-radius: 15px;
-        overflow: hidden;
+    border-collapse: separate;
+    border-spacing: 0 15px;
+    border-radius: 15px;
+    overflow: hidden;
 }
 
 .table-precision thead th {
     background-color: var(--pink-baby);
-        color: var(--precision-red);
-        font-size: 9px;
-        font-weight: 900;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        text-align: center;
-        padding: 20px 10px;
+    color: var(--precision-red);
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    text-align: center;
+    padding: 20px 10px;
 }
 
 .table-row-precision {
@@ -52,21 +55,21 @@
 
 .table-precision tbody td {
     padding: 15px 10px;
-        text-align: center;
-        font-size: 11px;
+    text-align: center;
+    font-size: 11px;
 }
 
-/* INPUT */
+/* Input */
 .input-precision {
-     background-color: #fecbcb22 !important;
-        border: 1px solid var(--pink-baby) !important;
-        color: var(--precision-red) !important;
-        border-radius: 10px;
-        font-size: 0.8rem;
-        padding: 8px 12px !important;
+    background-color: #fecbcb22 !important;
+    border: 1px solid var(--pink-baby) !important;
+    color: var(--precision-red) !important;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    padding: 8px 12px !important;
 }
 
-/* MODAL */
+/* Modal */
 .modal-overlay {
     background-color: rgba(0,0,0,0.4);
     backdrop-filter: blur(4px);
@@ -100,16 +103,38 @@
         </thead>
 
         <tbody>
+            {% set total_lucro = 0 %}
             {% for inv in investimentos %}
-            <tr class="table-row-precision">
-                <td style="color: var(--precision-red)">{{ inv.tipo }}</td>
-                <td style="color: var(--precision-red)">R$ {{ "%.2f"|format(inv.valor_investido) }}</td>
-                <td style="color: var(--precision-red)">{{ inv.taxa }}%</td>
-                <td style="color: var(--precision-red)">{{ inv.tempo }} meses</td>
-                <td style="color: green">R$ {{ "%.2f"|format(inv.lucro) }}</td>
+            <tr>
+                <td>{{ inv.tipo }}</td>
+                <td>{{ inv.valor_investido }}</td>
+                <td>{{ inv.taxa }}</td>
+                <td>{{ inv.tempo }}</td>
+                <td>{{ inv.lucro }}</td>
+                <td>
+                    <a href="{{ url_for('editar_simulador', id=inv.id) }}" style="color: var(--precision-red)">
+                        Editar
+                    </a>
+                    <a href="{{ url_for('excluir_simulador', id=inv.id) }}" style="color: var(--precision-red)">
+                        Excluir
+                    </a>
+                </td>
             </tr>
+            {% set total_lucro = total_lucro + inv.lucro %}
             {% endfor %}
         </tbody>
+
+        <tfoot>
+            <tr>
+                <td colspan="4" style="text-align: right; font-weight: bold; color: var(--precision-red);">
+                    Total Lucro:
+                </td>
+                <td style="font-weight: bold; color: var(--precision-red);">
+                    R$ {{ "%.2f"|format(total_lucro|float) }}
+                </td>
+                <td></td>
+            </tr>
+        </tfoot>
     </table>
 
 </div>
@@ -117,23 +142,23 @@
 <!-- MODAL -->
 <div id="modalCadastro" class="hidden fixed inset-0 flex items-center justify-center modal-overlay">
 
-    <div class="bg-white w-[350px] rounded-3xl border-4 border-[--pink-baby] relative">
+    <div class="bg-white w-[350px] rounded-3xl border-4" style="border-color: var(--pink-baby); position: relative;">
 
         <!-- FECHAR -->
         <button onclick="document.getElementById('modalCadastro').classList.add('hidden')"
-                class="absolute top-3 right-3 text-[--precision-red]">
+                style="position:absolute; top:12px; right:12px; color: var(--precision-red); font-size: 1.2rem;">
             ✕
         </button>
 
         <!-- TÍTULO -->
-        <div class="p-5 text-center border-b border-[--pink-baby]">
+        <div class="p-5 text-center border-b" style="border-color: var(--pink-baby);">
             <h3 class="font-black text-gradient-pink-red">NOVO INVESTIMENTO</h3>
         </div>
 
         <!-- FORM -->
         <form method="POST" class="p-5 space-y-3">
 
-            <select name="tipo" class="w-full input-precision">
+            <select name="tipo" class="w-full input-precision" required>
                 <option value="CDI">CDI</option>
                 <option value="LCI">LCI</option>
                 <option value="LCA">LCA</option>
@@ -148,8 +173,6 @@
 
             <input type="number" name="tempo" placeholder="Tempo (meses)"
                    class="w-full input-precision" required>
-
-
 
             <button class="bg-gradient-pink-red text-white w-full py-3 rounded-xl font-black">
                 SALVAR

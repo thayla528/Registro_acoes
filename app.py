@@ -87,29 +87,24 @@ def cadastro_de_acao():
     conn.close()
     return render_template("cadastro_acao.html", empresas=empresas)
 
-@app.route('/simulador', methods=['GET', 'POST'])
-def simulador():
-    valor = 0
 
-    if request.method == 'POST':
-        valor = float(request.form.get('valor', 0))
 
-    return render_template('simulador.html', valor=valor)
-
-@app.route('/investimentos', methods=['GET', 'POST'])
+@app.route('/simulador', methods=['GET', 'POST'], endpoint='simulador')
 def investimentos():
+    if "usuario" not in session:
+        return redirect(url_for("login"))
+
     conn = conectar()
     cursor = conn.cursor()
 
     if request.method == 'POST':
-        tipo = request.form['tipo']
-        valor = float(request.form['valor'])
-        taxa = float(request.form['taxa'])
-        tempo = int(request.form['tempo'])
-
+        tipo = request.form.get('tipo')
+        valor = float(request.form.get('valor_investido', 0))
+        taxa = float(request.form.get('taxa', 0))
+        tempo = int(request.form.get('tempo', 0))
 
         # cálculo simples (juros simples mensal)
-        lucro = valor * ((taxa/100) / 12) * tempo
+        lucro = valor * ((taxa / 100) / 12) * tempo
 
         cursor.execute("""
             INSERT INTO investimentos (usuario, tipo, valor_investido, taxa, tempo, lucro)
@@ -122,7 +117,7 @@ def investimentos():
     dados = cursor.fetchall()
     conn.close()
 
-    return render_template('investimentos.html', investimentos=dados)
+    return render_template('simulador.html', investimentos=dados)
 
 # ------------------ CADASTRAR EMPRESA ------------------
 @app.route("/cadastrar_empresa", methods=["POST"])
@@ -220,11 +215,60 @@ def editar_empresa(id):
     conn.close()
     return render_template("editar_acao.html", empresa=empresa)
 
+
+# ------------------ EDITAR INVESTIMENTO ------------------
+@app.route("/editar_simulador/<int:id>", methods=["GET", "POST"])
+def editar_simulador(id):
+    if "usuario" not in session:
+        return redirect(url_for("login"))
+
+    conn = conectar()
+    cursor = conn.cursor()
+
+    if request.method == "POST":
+        tipo = request.form.get("tipo")
+        valor = float(request.form.get("valor_investido", 0))
+        taxa = float(request.form.get("taxa", 0))
+        tempo = int(request.form.get("tempo", 0))
+        lucro = valor * ((taxa / 100) / 12) * tempo  # mesmo cálculo do POST do simulador
+
+        cursor.execute("""
+            UPDATE investimentos
+            SET tipo=?, valor_investido=?, taxa=?, tempo=?, lucro=?
+            WHERE id=? AND usuario=?
+        """, (tipo, valor, taxa, tempo, lucro, id, session["usuario"]))
+        conn.commit()
+        conn.close()
+        flash("Investimento atualizado com sucesso!", "success")
+        return redirect(url_for("simulador"))
+
+    # Buscar os dados do investimento
+    cursor.execute("SELECT * FROM investimentos WHERE id=? AND usuario=?", (id, session["usuario"]))
+    investimento = cursor.fetchone()
+    conn.close()
+    return render_template("editar_simulador.html", investimento=investimento)
+
+# ------------------ EXCLUIR INVESTIMENTO ------------------
+@app.route("/excluir_simulador/<int:id>")
+def excluir_simulador(id):
+    if "usuario" not in session:
+        return redirect(url_for("login"))
+
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM investimentos WHERE id=? AND usuario=?", (id, session["usuario"]))
+    conn.commit()
+    conn.close()
+    flash("Investimento excluído com sucesso!", "success")
+    return redirect(url_for("simulador"))
+
+# ------------------ EXCLUIR renda fixa ------------------
 # ------------------ EXCLUIR EMPRESA ------------------
 @app.route("/excluir_empresa/<int:id>")
 def excluir_empresa(id):
     if "usuario" not in session:
         return redirect(url_for("login"))
+
     conn = conectar()
     cursor = conn.cursor()
     cursor.execute("DELETE FROM empresas WHERE id=?", (id,))

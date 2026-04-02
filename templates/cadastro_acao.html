@@ -205,39 +205,98 @@
 <!-- MODAL -->
 <div id="modalCadastro" class="hidden fixed inset-0 z-[100] flex items-center justify-center modal-overlay">
 
-    <div class="bg-white w-[350px] rounded-[2.5rem] border-[4px] border-[--pink-baby] relative overflow-y-auto max-h-[90vh]">
+    <div class="bg-white w-[380px] rounded-[2.5rem] border-[4px] border-[--pink-baby] relative overflow-y-auto max-h-[90vh] shadow-2xl p-5">
 
+        <!-- FECHAR -->
         <button onclick="document.getElementById('modalCadastro').classList.add('hidden')"
-                class="absolute top-4 right-4 font-black">✕</button>
+                class="absolute top-4 right-4 font-black text-xl text-red-600 hover:text-red-800 transition">✕</button>
 
-        <div class="p-6 text-center border-b">
-            <h3 class="font-black uppercase text-gradient-pink-red">Novo Registro</h3>
+        <!-- TÍTULO -->
+        <div class="text-center border-b pb-4 mb-4" style="border-color: var(--pink-baby);">
+            <h3 class="font-black uppercase text-gradient-pink-red text-xl">Novo Registro</h3>
+            <p class="text-[10px] text-gray-500 mt-1">Preencha os campos para adicionar um ativo ao terminal</p>
         </div>
 
-        <form action="{{ url_for('cadastrar_empresa') }}" method="POST" class="p-6 space-y-3">
+        <!-- FORMULÁRIO -->
+        <form action="{{ url_for('cadastrar_empresa') }}" method="POST" class="space-y-4">
 
-            <input name="ticker" placeholder="Ticker" class="input-precision" required>
-            <input name="empresa" placeholder="Empresa" class="input-precision" required>
-            <input name="setor" placeholder="Setor" class="input-precision" required>
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-pink-500">label</span>
+                <input name="ticker" placeholder="Ticker (Ex: PETR4)" class="input-precision flex-1" required>
+            </div>
 
-            <input type="number" name="num_acoes" placeholder="Qtd Ações" class="input-precision" required>
-            <input type="number" step="0.01" name="preco_acao" placeholder="Preço" class="input-precision" required>
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-pink-500">business</span>
+                <input name="empresa" placeholder="Nome da Empresa" class="input-precision flex-1" required>
+            </div>
 
-            <input type="number" step="0.01" name="lucro_liquido" placeholder="Lucro" class="input-precision">
-            <input type="number" step="0.01" name="patrimonio" placeholder="Patrimônio" class="input-precision">
-            <input type="number" step="0.01" name="ativos" placeholder="Ativos" class="input-precision">
-            <input type="number" step="0.01" name="divida" placeholder="Dívida" class="input-precision">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-pink-500">apartment</span>
+                <input name="setor" placeholder="Setor (Ex: Energia)" class="input-precision flex-1" required>
+            </div>
 
-            <input type="number" name="lote" value="100" class="input-precision" required>
-            <input name="tipo_acao" placeholder="Tipo" class="input-precision" required>
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-pink-500">inventory_2</span>
+                <input type="number" name="num_acoes" placeholder="Qtd Ações" class="input-precision flex-1" required>
+            </div>
 
-            <button type="submit" class="bg-gradient-pink-red text-white w-full py-3 rounded-2xl font-black">
-                SALVAR
-            </button>
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-pink-500">attach_money</span>
+                <input type="number" step="0.01" name="preco_acao" placeholder="Preço" class="input-precision flex-1" required>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-pink-500">trending_up</span>
+                <input type="number" step="0.01" name="lucro_liquido" placeholder="Lucro" class="input-precision flex-1">
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-pink-500">account_balance</span>
+                <input type="number" step="0.01" name="patrimonio" placeholder="Patrimônio" class="input-precision flex-1">
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-pink-500">savings</span>
+                <input type="number" step="0.01" name="ativos" placeholder="Ativos" class="input-precision flex-1">
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-pink-500">report</span>
+                <input type="number" step="0.01" name="divida" placeholder="Dívida" class="input-precision flex-1">
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-pink-500">inventory</span>
+                <input type="number" name="lote" value="100" class="input-precision flex-1" required>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-pink-500">category</span>
+                <input name="tipo_acao" placeholder="Tipo" class="input-precision flex-1" required>
+            </div>
+
+            <!-- BOTÕES -->
+            <div class="flex justify-between gap-3 mt-4">
+                <button type="submit" class="bg-gradient-pink-red text-white w-1/2 py-3 rounded-2xl font-black flex items-center justify-center gap-2 hover:brightness-110 transition">
+                    <span class="material-symbols-outlined">save</span> SALVAR
+                </button>
+
+                <button type="button" onclick="document.getElementById('modalCadastro').classList.add('hidden')"
+                        class="bg-gray-200 text-gray-700 w-1/2 py-3 rounded-2xl font-black flex items-center justify-center gap-2 hover:bg-gray-300 transition">
+                    <span class="material-symbols-outlined">cancel</span> CANCELAR
+                </button>
+            </div>
 
         </form>
     </div>
 </div>
+
+<script>
+window.onclick = function(event) {
+    const modal = document.getElementById('modalCadastro');
+    if (event.target == modal) modal.classList.add('hidden');
+}
+</script>
 
 <script>
 window.onclick = function(event) {
