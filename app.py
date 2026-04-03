@@ -79,10 +79,11 @@ def upload_foto():
 @app.route("/cadastro_de_acao")
 def cadastro_de_acao():
     if "usuario" not in session:
+
         return redirect(url_for("login"))
     conn = conectar()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM empresas")
+    cursor.execute("SELECT * FROM empresas WHERE usuario = ?", (session["usuario"],))
     empresas = cursor.fetchall()
     conn.close()
     return render_template("cadastro_acao.html", empresas=empresas)
@@ -153,10 +154,11 @@ def cadastrar_empresa():
         cursor = conn.cursor()
         cursor.execute("""
             INSERT INTO empresas (
-                ticker, empresa, setor, num_acoes, preco_acao,
+                usuario, ticker, empresa, setor, num_acoes, preco_acao,
                 lucro_liquido, patrimonio, ativos, divida, lote, tipo_acao
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
+            session["usuario"],
             ticker, empresa_nome, setor, num_acoes, preco_acao,
             lucro_liquido, patrimonio, ativos, divida, lote, tipo_acao
         ))
